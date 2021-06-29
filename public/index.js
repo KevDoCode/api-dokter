@@ -1,5 +1,8 @@
 const app = require("../App/App");
-const port = 30;
+
+const server = require("http").createServer();
+const port = process.env.PORT || 3000;
+
 app.listen(port, () => {
   console.log(`REST at http://localhost:${port}`);
 });
