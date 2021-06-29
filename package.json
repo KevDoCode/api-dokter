@@ -1,0 +1,19 @@
+{
+  "name": "projectdoctor",
+  "author": {
+    "name": "Novandi Kevin Pratama",
+    "email": "20081010005@student.upnjatim.ac.id"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "express-validator": "^6.12.0",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1"
+  },
+  "scripts": {
+    "start": "node ./public/index.js"
+  }
+}
