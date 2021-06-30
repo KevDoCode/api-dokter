@@ -6,7 +6,7 @@ const Middleware = require("../Middleware/Middleware");
 const Route = require("../Routes/Routes");
 const Cors = require("cors");
 //CORS
-//app.use(Cors);
+app.use(Cors());
 
 //Make body readable
 app.use(express.json());
