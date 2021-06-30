@@ -6,7 +6,7 @@ const { encrypt } = require("../Util/Encrypt");
 const validate = require("../Validation/UserValidation");
 const handlerInput = require("../Util/ValidationHandler");
 
-router.post("/register", validate, handlerInput, function (req, res, next) {
+router.post("/register", validate(), handlerInput, function (req, res) {
   let sql = `INSERT INTO users (username,email,firstName, lastName, password,roles) VALUES ( $1, $2, $3, $4, $5, $6)`;
   let data = [
     req.body.username,
