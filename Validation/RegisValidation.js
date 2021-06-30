@@ -6,31 +6,29 @@ function validate() {
     body("idappointments").custom(checkAppointment),
     body("date_regist").isDate(),
     body("date_book").isDate(),
-    body("time_book").isDate(),
+    body("time_book").matches("^([0-2][0-9]):[0-5][0-9]$"),
     body("flagstatus").isNumeric(),
   ];
 }
-function checkAppointment(id) {
-  let sql = "SELECT id FROM appointments WHERE id =?";
+async function checkAppointment(id) {
+  let sql = "SELECT id FROM appointments WHERE id =$1";
+  let res = await db.query(sql, [id]);
   return new Promise((resolve, reject) => {
-    db.query(sql, [id], function (err, res, field) {
-      if (res.length == 0) {
-        reject("Appointment Not Found");
-      }
-      resolve();
-    });
+    if (res.length == 0) {
+      reject("Appointment Not Found");
+    }
+    resolve();
   });
 }
 
-function checkUsername(username) {
-  let sql = "SELECT username FROM users WHERE username =? and roles=2";
+async function checkUsername(username) {
+  let sql = "SELECT username FROM users WHERE username =$1 and roles=2";
+  let res = await db.query(sql, [id]);
   return new Promise((resolve, reject) => {
-    db.query(sql, [username], function (err, res, field) {
-      if (res.length == 0) {
-        reject("Username Not Found");
-      }
-      resolve();
-    });
+    if (res.length == 0) {
+      reject("Username Not Found");
+    }
+    resolve();
   });
 }
 

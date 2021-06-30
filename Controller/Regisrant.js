@@ -4,8 +4,8 @@ var koneksi = require("../Util/Database");
 const handlerInput = require("../Util/ValidationHandler");
 const validate = require("../Validation/RegisValidation");
 
-router.get("/", function (req, res, next) {
-  koneksi.any(
+router.get("/", async function (req, res, next) {
+  let result = await koneksi.query(
     `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
 ,users.firstName, users.lastName,.users.email, appointments.description, doctors.doctor
 FROM registrant
@@ -15,26 +15,25 @@ INNER join appointments
 on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
-`,
-    function (result) {
-      if (result.length > 0) {
-        res.status(200).json({
-          status: true,
-          data: result,
-        });
-      } else {
-        res.status(200).json({
-          status: true,
-          data: [],
-        });
-      }
-    }
+`
   );
+
+  if (result.length > 0) {
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } else {
+    res.status(200).json({
+      status: true,
+      data: [],
+    });
+  }
 });
 
-router.get("/:id", function (req, res, next) {
+router.get("/:id", async function (req, res, next) {
   let id = req.params.id;
-  koneksi.any(
+  let result = await koneksi.query(
     `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
 ,users.firstName, users.lastName,.users.email, appointments.description, doctors.doctor
 FROM registrant
@@ -44,26 +43,24 @@ INNER join appointments
 on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
- where appointments.id =?`,
-    [id],
-    function (result) {
-      if (result.length == 1) {
-        res.status(200).json({
-          status: true,
-          data: result[0],
-        });
-      } else {
-        res.status(403).json({
-          status: false,
-          data: [],
-        });
-      }
-    }
+ where appointments.id = $1`,
+    [id]
   );
+  if (result.length == 1) {
+    res.status(200).json({
+      status: true,
+      data: result[0],
+    });
+  } else {
+    res.status(403).json({
+      status: false,
+      data: [],
+    });
+  }
 });
 
 router.post("/", validate(), handlerInput, function (req, res, next) {
-  let sql = `INSERT INTO registrant (username, idappointments, date_regist, date_book, time_book, flagstatus) VALUES (?,?,?,?,?,?)`;
+  let sql = `INSERT INTO registrant (username, idappointments, date_regist, date_book, time_book, flagstatus) VALUES ($1,$2,$3,$4,$5,$6)`;
   let data = [
     req.username,
     req.body.idappointments,
@@ -72,7 +69,7 @@ router.post("/", validate(), handlerInput, function (req, res, next) {
     req.body.time_book,
     req.body.flagstatus,
   ];
-  koneksi.any(sql, data);
+  koneksi.none(sql, data);
   res.status(200).json({
     status: true,
     data: req.body,
@@ -83,7 +80,7 @@ router.post("/", validate(), handlerInput, function (req, res, next) {
 
 router.put("/:id", validate(), handlerInput, function (req, res, next) {
   let id = req.params.id;
-  let sql = `UPDATE  registrant SET username=?, idappointments=?, date_regist=?, date_book=?, time_book=?, flagstatus=? where id = ?`;
+  let sql = `UPDATE  registrant SET username=$1, idappointments=$2, date_regist=$3, date_book=$4, time_book=$5, flagstatus=$6 where id = $7`;
   let data = [
     req.username,
     req.body.idappointments,
@@ -93,7 +90,7 @@ router.put("/:id", validate(), handlerInput, function (req, res, next) {
     req.body.flagstatus,
     id,
   ];
-  koneksi.any(sql, data);
+  koneksi.none(sql, data);
   res.status(200).json({
     status: true,
     data: req.body,
@@ -104,14 +101,11 @@ router.put("/:id", validate(), handlerInput, function (req, res, next) {
 
 router.delete("/:id", function (req, res, next) {
   let id = req.params.id;
-  let sql = `DELETE FROM registrant WHERE id=?`;
+  let sql = `DELETE FROM registrant WHERE id=$1`;
   let data = [id];
-  koneksi.any(sql, data, function (result) {
-    if (er == null) {
-      res.json({ error: "Data Gagal disimpan " });
-    } else {
-      res.json({ msg: "Data Berhasil disimpan" });
-    }
+  koneksi.none(sql, data);
+  res.status(200).json({
+    status: true,
   });
 });
 module.exports = router;
