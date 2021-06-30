@@ -14,43 +14,41 @@ function validate() {
   ];
 }
 
-function checkUsername(username, { req }) {
+async function checkUsername(username, { req }) {
   let sql;
   if (req.method == "PUT") {
     sql =
-      "select username from users where username = ? and username !='" +
+      "select username from users where username = $1 and username !='" +
       req.params.id +
       "'";
   } else {
-    sql = "select username from users where username = ?";
+    sql = "select username from users where username = $1";
   }
+  let res = await db.query(sql, [username]);
   return new Promise((resolve, reject) => {
-    db.query(sql, [username], function (err, res, field) {
-      if (res.length > 0) {
-        reject("Username already used");
-      }
-      resolve();
-    });
+    if (res.length > 0) {
+      reject("Username already used");
+    }
+    resolve();
   });
 }
 
-function checkEmail(email, { req }) {
+async function checkEmail(email, { req }) {
   let sql;
   if (req.method == "PUT") {
     sql =
-      "select email from users where email = ? and username !='" +
+      "select email from users where username = $1 and username !='" +
       req.params.id +
       "'";
   } else {
-    sql = "select email from users where email = ?";
+    sql = "select email from users where username = $1";
   }
+  let res = await db.query(sql, [email]);
   return new Promise((resolve, reject) => {
-    db.query(sql, [email], function (err, res, field) {
-      if (res.length > 0) {
-        reject("Email already used");
-      }
-      resolve();
-    });
+    if (res.length > 0) {
+      reject("Email already used");
+    }
+    resolve();
   });
 }
 
