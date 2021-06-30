@@ -12,7 +12,7 @@ const resultValidation = validationResult.withDefaults({
 function handlerInput(req, res, next) {
   let error = resultValidation(req);
   if (!error.isEmpty()) {
-    res.status(400).json({ status: false, error: error.array() });
+    res.status(409).json({ status: false, error: error.array() });
   } else {
     next();
   }
