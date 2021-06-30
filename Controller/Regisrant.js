@@ -7,7 +7,7 @@ const validate = require("../Validation/RegisValidation");
 router.get("/", async function (req, res, next) {
   let result = await koneksi.query(
     `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
-,users.firstName, users.lastName,.users.email, appointments.description, doctors.doctor
+,users.firstName, users.lastName,users.email, appointments.description, doctors.doctor
 FROM registrant
 inner JOIN users
 on registrant.username = users.username
@@ -35,7 +35,7 @@ router.get("/:id", async function (req, res, next) {
   let id = req.params.id;
   let result = await koneksi.query(
     `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
-,users.firstName, users.lastName,.users.email, appointments.description, doctors.doctor
+,users.firstName, users.lastName,users.email, appointments.description, doctors.doctor
 FROM registrant
 inner JOIN users
 on registrant.username = users.username
