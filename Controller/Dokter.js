@@ -4,37 +4,38 @@ var koneksi = require("../Util/Database");
 const handlerInput = require("../Util/ValidationHandler");
 const validate = require("../Validation/DoctorValidation");
 
-router.get("/", function (req, res, next) {
-  koneksi.any("select * from doctors").then((result) => {
-    if (result.length > 0) {
-      res.status(200).json({
-        status: true,
-        data: result,
-      });
-    } else {
-      res.status(200).json({
-        status: true,
-        data: [],
-      });
-    }
-  });
+router.get("/", async function (req, res, next) {
+  let result = await koneksi.query("select * from doctors");
+  if (result.length > 0) {
+    res.status(200).json({
+      status: true,
+      data: result,
+    });
+  } else {
+    res.status(200).json({
+      status: true,
+      data: [],
+    });
+  }
+  //
 });
 
-router.get("/:id", function (req, res, next) {
+router.get("/:id", async function (req, res, next) {
   let id = req.params.id;
-  koneksi.any("select * from doctors where id = $1", [id]).then((result) => {
-    if (result.length == 1) {
-      res.status(200).json({
-        status: true,
-        data: result[0],
-      });
-    } else {
-      res.status(403).json({
-        status: false,
-        data: [],
-      });
-    }
-  });
+  let result = await koneksi.query("select * from doctors where id = $1", [id]);
+
+  if (result.length == 1) {
+    res.status(200).json({
+      status: true,
+      data: result[0],
+    });
+  } else {
+    res.status(403).json({
+      status: false,
+      data: [],
+    });
+  }
+  //
 });
 
 router.post("/", validate(), handlerInput, function (req, res, next) {
@@ -66,28 +67,28 @@ router.put("/:id", function (req, res) {
   //
 });
 
-router.delete("/:id", function (req, res, next) {
+router.delete("/:id", async function (req, res, next) {
   let id = req.params.id;
   let sql = `DELETE FROM doctors WHERE id=$1`;
   let data = [id];
 
-  koneksi
-    .any("select iddoctor from appointments where iddoctor = $1", [id])
-    .then((result) => {
-      if (result.length == 0) {
-        koneksi.none(sql, data);
-        res.status(200).json({
-          status: true,
-          data: result[0],
-        });
-      } else {
-        res.status(403).json({
-          status: false,
-          data: [],
-        });
-      }
-    });
+  let result = await koneksi.query(
+    "select iddoctor from appointments where iddoctor = $1",
+    [id]
+  );
 
+  if (result.length == 0) {
+    koneksi.none(sql, data);
+    res.status(200).json({
+      status: true,
+      data: result[0],
+    });
+  } else {
+    res.status(403).json({
+      status: false,
+      data: [],
+    });
+  }
   //
 });
 module.exports = router;
