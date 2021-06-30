@@ -5,7 +5,7 @@ const handlerInput = require("../Util/ValidationHandler");
 const validate = require("../Validation/DoctorValidation");
 
 router.get("/", function (req, res, next) {
-  koneksi.query("select * from doctors", function (er, result, field) {
+  koneksi.any("select * from doctors").then((result) => {
     if (result.length > 0) {
       res.status(200).json({
         status: true,
@@ -22,12 +22,60 @@ router.get("/", function (req, res, next) {
 
 router.get("/:id", function (req, res, next) {
   let id = req.params.id;
-  koneksi.query(
-    "select * from doctors where id =?",
-    [id],
-    function (er, result, field) {
-      if (result.length == 1) {
-        res.json(result[0]);
+  koneksi.any("select * from doctors where id = $1", [id]).then((result) => {
+    if (result.length == 1) {
+      res.status(200).json({
+        status: true,
+        data: result[0],
+      });
+    } else {
+      res.status(403).json({
+        status: false,
+        data: [],
+      });
+    }
+  });
+});
+
+router.post("/", validate(), handlerInput, function (req, res, next) {
+  let sql = `INSERT INTO doctors (doctor,address,phonenumber) VALUES ($1,$2,$3)`;
+  let data = [req.body.doctor, req.body.address, req.body.phonenumber];
+
+  koneksi.any(sql, data);
+  res.status(200).json({
+    status: true,
+    data: req.body,
+  });
+
+  //
+});
+
+router.put("/:id", function (req, res) {
+  let id = req.params.id;
+  let sql = `UPDATE doctors SET doctor = $1 ,address = $2 ,phonenumber = $3 WHERE id= $4`;
+  let data = [req.body.doctor, req.body.address, req.body.phonenumber, id];
+
+  koneksi.any(sql, data).catch((e) => {
+    console.log(e);
+  });
+
+  res.status(200).json({
+    status: true,
+    data: req.body,
+  });
+  //
+});
+
+router.delete("/:id", function (req, res, next) {
+  let id = req.params.id;
+  let sql = `DELETE FROM doctors WHERE id=$1`;
+  let data = [id];
+
+  koneksi
+    .any("select iddoctor from appointments where iddoctor = $1", [id])
+    .then((result) => {
+      if (result.length == 0) {
+        koneksi.none(sql, data);
         res.status(200).json({
           status: true,
           data: result[0],
@@ -38,43 +86,8 @@ router.get("/:id", function (req, res, next) {
           data: [],
         });
       }
-    }
-  );
-});
-
-router.post("/", validate(), handlerInput, function (req, res, next) {
-  let sql = `INSERT INTO doctors (doctor,address,phonenumber) VALUES (?,?,?)`;
-  let data = [req.body.doctor, req.body.address, req.body.phonenumber];
-  koneksi.query(sql, data, function (er, result, field) {
-    res.status(200).json({
-      status: true,
-      data: req.body,
     });
-  });
-});
 
-router.put("/:id", validate, handlerInput, function (req, res, next) {
-  let id = req.params.id;
-  let sql = `UPDATE doctors SET doctor = ?,address =?,phonenumber =? WHERE id=?`;
-  let data = [req.body.doctor, req.body.address, req.body.phonenumber, id];
-  koneksi.query(sql, data, function (er, result, field) {
-    res.status(200).json({
-      status: true,
-      data: req.body,
-    });
-  });
-});
-
-router.delete("/:id", function (req, res, next) {
-  let id = req.params.id;
-  let sql = `DELETE FROM doctors WHERE id=?`;
-  let data = [id];
-  koneksi.query(sql, data, function (er, result, field) {
-    if (er == null) {
-      res.json({ error: "Data Gagal disimpan " });
-    } else {
-      res.json({ msg: "Data Berhasil disimpan" });
-    }
-  });
+  //
 });
 module.exports = router;

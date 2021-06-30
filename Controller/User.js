@@ -6,11 +6,11 @@ const validate = require("../Validation/UserValidation");
 const handlerInput = require("../Util/ValidationHandler");
 
 router.get("/", function (req, res, next) {
-  koneksi.query(
+  koneksi.any(
     `SELECT username, email, firstName, lastName, password, roles.roles FROM users
 INNER JOIN roles
 ON users.roles = roles.id`,
-    function (er, result, field) {
+    function (result) {
       if (result.length > 0) {
         res.status(200).json({
           status: true,
@@ -28,12 +28,12 @@ ON users.roles = roles.id`,
 
 router.get("/:id", function (req, res, next) {
   let id = req.params.id;
-  koneksi.query(
+  koneksi.any(
     `SELECT username, email, firstName, lastName, password, roles.roles FROM users
 INNER JOIN roles
 ON users.roles = roles.id where username =?`,
     [id],
-    function (er, result, field) {
+    function (result) {
       if (result.length == 1) {
         res.status(200).json({
           status: true,
@@ -59,12 +59,13 @@ router.post("/", validate(), handlerInput, function (req, res, next) {
     encrypt(req.body.password),
     req.body.roles,
   ];
-  koneksi.query(sql, data, function (er, result, field) {
-    res.status(200).json({
-      status: true,
-      data: req.body,
-    });
+  koneksi.any(sql, data);
+  res.status(200).json({
+    status: true,
+    data: req.body,
   });
+
+  //
 });
 
 router.put("/:id", validate(), handlerInput, function (req, res, next) {
@@ -79,19 +80,20 @@ router.put("/:id", validate(), handlerInput, function (req, res, next) {
     req.body.roles,
     id,
   ];
-  koneksi.query(sql, data, function (er, result, field) {
-    res.status(200).json({
-      status: true,
-      data: req.body,
-    });
+  koneksi.any(sql, data);
+  res.status(200).json({
+    status: true,
+    data: req.body,
   });
+
+  //
 });
 
 router.delete("/:id", function (req, res, next) {
   let id = req.params.id;
   let sql = `DELETE FROM users WHERE username=?`;
   let data = [id];
-  koneksi.query(sql, data, function (er, result, field) {
+  koneksi.any(sql, data, function (result) {
     if (er == null) {
       res.json({ error: "Data Gagal disimpan " });
     } else {

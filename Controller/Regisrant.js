@@ -5,7 +5,7 @@ const handlerInput = require("../Util/ValidationHandler");
 const validate = require("../Validation/RegisValidation");
 
 router.get("/", function (req, res, next) {
-  koneksi.query(
+  koneksi.any(
     `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
 ,users.firstName, users.lastName,.users.email, appointments.description, doctors.doctor
 FROM registrant
@@ -16,7 +16,7 @@ on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
 `,
-    function (er, result, field) {
+    function (result) {
       if (result.length > 0) {
         res.status(200).json({
           status: true,
@@ -34,7 +34,7 @@ on doctors.id = appointments.iddoctor
 
 router.get("/:id", function (req, res, next) {
   let id = req.params.id;
-  koneksi.query(
+  koneksi.any(
     `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
 ,users.firstName, users.lastName,.users.email, appointments.description, doctors.doctor
 FROM registrant
@@ -46,7 +46,7 @@ inner JOIN doctors
 on doctors.id = appointments.iddoctor
  where appointments.id =?`,
     [id],
-    function (er, result, field) {
+    function (result) {
       if (result.length == 1) {
         res.status(200).json({
           status: true,
@@ -72,12 +72,13 @@ router.post("/", validate(), handlerInput, function (req, res, next) {
     req.body.time_book,
     req.body.flagstatus,
   ];
-  koneksi.query(sql, data, function (er, result, field) {
-    res.status(200).json({
-      status: true,
-      data: req.body,
-    });
+  koneksi.any(sql, data);
+  res.status(200).json({
+    status: true,
+    data: req.body,
   });
+
+  //
 });
 
 router.put("/:id", validate(), handlerInput, function (req, res, next) {
@@ -92,19 +93,20 @@ router.put("/:id", validate(), handlerInput, function (req, res, next) {
     req.body.flagstatus,
     id,
   ];
-  koneksi.query(sql, data, function (er, result, field) {
-    res.status(200).json({
-      status: true,
-      data: req.body,
-    });
+  koneksi.any(sql, data);
+  res.status(200).json({
+    status: true,
+    data: req.body,
   });
+
+  //
 });
 
 router.delete("/:id", function (req, res, next) {
   let id = req.params.id;
   let sql = `DELETE FROM registrant WHERE id=?`;
   let data = [id];
-  koneksi.query(sql, data, function (er, result, field) {
+  koneksi.any(sql, data, function (result) {
     if (er == null) {
       res.json({ error: "Data Gagal disimpan " });
     } else {

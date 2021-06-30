@@ -3,22 +3,22 @@ const db = require("../Util/Database");
 function validate() {
   return [
     body("iddoctor").custom(checkDoctor),
-    body("start").isDate(),
-    body("end").isDate(),
+    body("starttime").matches("^([0-2][0-9]):[0-5][0-9]$"),
+    body("endtime").matches("^([0-2][0-9]):[0-5][0-9]$"),
     body("description").notEmpty(),
     body("duration").isNumeric(),
   ];
 }
 
-function checkDoctor(id) {
-  let sql = "SELECT doctor FROM doctors WHERE id =?";
+async function checkDoctor(id) {
+  let sql = "SELECT doctor FROM doctors WHERE id = $1";
+  let data = await db.query(sql, [id]);
   return new Promise((resolve, reject) => {
-    db.query(sql, [id], function (err, res, field) {
-      if (res.length == 0) {
-        reject("Doctor Not Found");
-      }
+    if (data.length == 0) {
+      reject("Doctor Not Found");
+    } else {
       resolve();
-    });
+    }
   });
 }
 
