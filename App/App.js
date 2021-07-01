@@ -6,7 +6,18 @@ const Middleware = require("../Middleware/Middleware");
 const Route = require("../Routes/Routes");
 const Cors = require("cors");
 //CORS
-app.use(Cors());
+var whitelist = ["https://webdokter.herokuapp.com", "http://localhost:3000/"];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(Cors(corsOptions));
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
