@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 //Add middleware
-// app.use(Middleware);
+app.use(Middleware);
 
 //Add Routes
 Route(app);
