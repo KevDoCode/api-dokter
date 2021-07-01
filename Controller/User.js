@@ -74,7 +74,7 @@ router.put("/:id", validate(), handlerInput, function (req, res, next) {
     req.body.email,
     req.body.firstName,
     req.body.lastName,
-    encrypt(req.body.password),
+    req.body.password,
     req.body.roles,
     id,
   ];
