@@ -7,7 +7,7 @@ const handlerInput = require("../Util/ValidationHandler");
 
 router.get("/", async function (req, res) {
   let result = await koneksi.query(
-    `SELECT username, email, firstName, lastName, password, roles.roles FROM users
+    `SELECT username, email, firstName, lastName, password, roles.roles, roles.id FROM users
 INNER JOIN roles
 ON users.roles = roles.id`
   );
@@ -28,7 +28,7 @@ ON users.roles = roles.id`
 router.get("/:id", async function (req, res, next) {
   let id = req.params.id;
   let result = await koneksi.query(
-    `SELECT username, email, firstName, lastName, password, roles.roles FROM users
+    `SELECT username, email, firstName, lastName, password, roles.roles, roles.id FROM users
 INNER JOIN roles
 ON users.roles = roles.id where username =$1`,
     [id]
