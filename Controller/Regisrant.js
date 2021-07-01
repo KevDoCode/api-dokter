@@ -30,6 +30,16 @@ on doctors.id = appointments.iddoctor
     });
   }
 });
+router.get("/dashboard", async function (req, res, next) {
+  let result = await koneksi.query(`select count(id) as count from registrant`);
+  let result1 = await koneksi.query(
+    `select count(username) as count from users where roles = 2`
+  );
+  res.status(200).json({
+    status: true,
+    data: { regist: result[0], user: result1[0] },
+  });
+});
 
 router.get("/:id", async function (req, res, next) {
   let id = req.params.id;
