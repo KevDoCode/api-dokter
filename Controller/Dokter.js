@@ -51,7 +51,7 @@ router.post("/", validate(), handlerInput, function (req, res, next) {
   //
 });
 
-router.put("/:id", function (req, res) {
+router.put("/:id", validate(), handlerInput, function (req, res) {
   let id = req.params.id;
   let sql = `UPDATE doctors SET doctor = $1 ,address = $2 ,phonenumber = $3 WHERE id= $4`;
   let data = [req.body.doctor, req.body.address, req.body.phonenumber, id];
