@@ -72,7 +72,7 @@ on doctors.id = appointments.iddoctor
 router.post("/", validate(), handlerInput, function (req, res, next) {
   let sql = `INSERT INTO registrant (username, idappointments, date_regist, date_book, time_book, flagstatus) VALUES ($1,$2,$3,$4,$5,$6)`;
   let data = [
-    req.username,
+    req.body.username,
     req.body.idappointments,
     req.body.date_regist,
     req.body.date_book,
