@@ -23,7 +23,7 @@ async function checkAppointment(id) {
 
 async function checkUsername(username) {
   let sql = "SELECT username FROM users WHERE username =$1 and roles=2";
-  let res = await db.query(sql, [id]);
+  let res = await db.query(sql, [username]);
   return new Promise((resolve, reject) => {
     if (res.length == 0) {
       reject("Username Not Found");
