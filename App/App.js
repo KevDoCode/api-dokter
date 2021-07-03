@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
-
+const cmpression = require("compression")
 var path = require("path");
+app.use(cmpression)
 const Middleware = require("../Middleware/Middleware");
 const Route = require("../Routes/Routes");
 const Cors = require("cors");
