@@ -39,7 +39,7 @@ ON users.roles = roles.id where username =$1`,
       data: result[0],
     });
   } else {
-    res.status(403).json({
+    res.status(204).json({
       status: false,
       data: [],
     });
@@ -104,7 +104,7 @@ router.delete("/:id", async function (req, res, next) {
       data: result[0],
     });
   } else {
-    res.status(403).json({
+    res.status(204).json({
       status: false,
       data: [],
     });

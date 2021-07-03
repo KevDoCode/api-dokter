@@ -137,7 +137,7 @@ on doctors.id = appointments.iddoctor
       data: result[0],
     });
   } else {
-    res.status(403).json({
+    res.status(204).json({
       status: false,
       data: [],
     });
