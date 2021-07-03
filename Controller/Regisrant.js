@@ -30,7 +30,9 @@ INNER join appointments
 on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
-  limit ` + req.query.limit
+  limit ` +
+        req.query.limit +
+        ` order by date_book, time_book desc`
     );
   }
 
@@ -69,7 +71,7 @@ INNER join appointments
 on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
- where appointments.id = $1`,
+ where appointments.id = $1` + ` order by date_book, time_book desc`,
     [id]
   );
   if (result.length > 0) {
@@ -97,7 +99,7 @@ INNER join appointments
 on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
- where registrant.username = $1`,
+ where registrant.username = $1` + ` order by date_book, time_book desc`,
     [id]
   );
   if (result.length > 0) {

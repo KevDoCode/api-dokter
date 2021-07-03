@@ -6,7 +6,11 @@ const Middleware = require("../Middleware/Middleware");
 const Route = require("../Routes/Routes");
 const Cors = require("cors");
 //CORS
-var whitelist = ["https://webdokter.herokuapp.com", "http://localhost:3000"];
+var whitelist = [
+  "https://webdokter.herokuapp.com",
+  "http://localhost:3000",
+  "https://api-dokter.herokuapp.com",
+];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
