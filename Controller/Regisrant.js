@@ -75,7 +75,7 @@ on doctors.id = appointments.iddoctor
   if (result.length == 1) {
     res.status(200).json({
       status: true,
-      data: result[0],
+      data: result,
     });
   } else {
     res.status(200).json({
@@ -103,7 +103,7 @@ on doctors.id = appointments.iddoctor
   if (result.length == 1) {
     res.status(200).json({
       status: true,
-      data: result[0],
+      data: result,
     });
   } else {
     res.status(200).json({
