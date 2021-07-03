@@ -34,7 +34,7 @@ router.post("/login", async function (req, res, next) {
     res.json({
       token: token,
       role: result[0].roles,
-      name: result[0].firstname + result[0].lastname,
+      name: result[0].firstname + " " + result[0].lastname,
     });
   } else {
     res.status(404).json({ msg: "Username atau Password tidak ditemukan" });
