@@ -27,7 +27,7 @@ async function checkTime(id, { req }) {
     "SELECT username FROM registrant WHERE time_book =$1 AND date_book =$2";
   let res = await db.query(sql, [id, date]);
   return new Promise((resolve, reject) => {
-    if (res.length > 0) {
+    if (res.length > 0 && req.method == "POST") {
       reject("Time has been booked");
     }
     resolve();
