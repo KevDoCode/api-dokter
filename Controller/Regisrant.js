@@ -5,8 +5,10 @@ const handlerInput = require("../Util/ValidationHandler");
 const validate = require("../Validation/RegisValidation");
 
 router.get("/", async function (req, res, next) {
-  let result = await koneksi.query(
-    `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
+  let result;
+  if (req.query.limit == undefined) {
+    result = await koneksi.query(
+      `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
 ,users.firstName, users.lastName,users.email, appointments.description, doctors.doctor
 FROM registrant
 inner JOIN users
@@ -16,7 +18,21 @@ on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
 `
-  );
+    );
+  } else {
+    result = await koneksi.query(
+      `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
+,users.firstName, users.lastName,users.email, appointments.description, doctors.doctor
+FROM registrant
+inner JOIN users
+on registrant.username = users.username
+INNER join appointments
+on appointments.id = registrant.idappointments
+inner JOIN doctors
+on doctors.id = appointments.iddoctor
+  limit ` + req.query.limit
+    );
+  }
 
   if (result.length > 0) {
     res.status(200).json({
@@ -41,7 +57,7 @@ router.get("/dashboard", async function (req, res, next) {
   });
 });
 
-router.get("/:id", async function (req, res, next) {
+router.get("/appointment/:id", async function (req, res, next) {
   let id = req.params.id;
   let result = await koneksi.query(
     `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
@@ -54,6 +70,63 @@ on appointments.id = registrant.idappointments
 inner JOIN doctors
 on doctors.id = appointments.iddoctor
  where appointments.id = $1`,
+    [id]
+  );
+  if (result.length == 1) {
+    res.status(200).json({
+      status: true,
+      data: result[0],
+    });
+  } else {
+    res.status(403).json({
+      status: false,
+      data: [],
+    });
+  }
+});
+
+router.get("/username/:id", async function (req, res, next) {
+  let id = req.params.id;
+  let result = await koneksi.query(
+    `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
+,users.firstName, users.lastName,users.email, appointments.description, doctors.doctor
+FROM registrant
+inner JOIN users
+on registrant.username = users.username
+INNER join appointments
+on appointments.id = registrant.idappointments
+inner JOIN doctors
+on doctors.id = appointments.iddoctor
+ where registrant.username = $1`,
+    [id]
+  );
+  if (result.length == 1) {
+    res.status(200).json({
+      status: true,
+      data: result[0],
+    });
+  } else {
+    res.status(403).json({
+      status: false,
+      data: [],
+    });
+  }
+});
+
+router.get("/:id", async function (req, res, next) {
+  let id = req.params.id;
+
+  let result = await koneksi.query(
+    `SELECT registrant.id, registrant.username, idappointments, date_regist, date_book, time_book, flagstatus
+,users.firstName, users.lastName,users.email, appointments.description, doctors.doctor
+FROM registrant
+inner JOIN users
+on registrant.username = users.username
+INNER join appointments
+on appointments.id = registrant.idappointments
+inner JOIN doctors
+on doctors.id = appointments.iddoctor
+ where registrant.id = $1`,
     [id]
   );
   if (result.length == 1) {
