@@ -78,8 +78,8 @@ on doctors.id = appointments.iddoctor
       data: result[0],
     });
   } else {
-    res.status(403).json({
-      status: false,
+    res.status(200).json({
+      status: true,
       data: [],
     });
   }
@@ -106,8 +106,8 @@ on doctors.id = appointments.iddoctor
       data: result[0],
     });
   } else {
-    res.status(403).json({
-      status: false,
+    res.status(200).json({
+      status: true,
       data: [],
     });
   }
