@@ -72,7 +72,7 @@ on doctors.id = appointments.iddoctor
  where appointments.id = $1`,
     [id]
   );
-  if (result.length == 1) {
+  if (result.length > 0) {
     res.status(200).json({
       status: true,
       data: result,
@@ -100,7 +100,7 @@ on doctors.id = appointments.iddoctor
  where registrant.username = $1`,
     [id]
   );
-  if (result.length == 1) {
+  if (result.length > 0) {
     res.status(200).json({
       status: true,
       data: result,
