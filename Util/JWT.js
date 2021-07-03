@@ -4,7 +4,8 @@ var key = "85838781494488976149270763900171";
 function generate(username, role) {
   return jwt.sign(
     { username: username, role: role, project: "AplikasiDokter" },
-    key
+    key,
+    { expiresIn: 1000 * 2 }
   );
 }
 
