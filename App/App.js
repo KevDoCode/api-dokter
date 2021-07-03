@@ -21,7 +21,7 @@ var corsOptions = {
   },
 };
 
-// app.use(Cors(corsOptions));
+app.use(Cors());
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
