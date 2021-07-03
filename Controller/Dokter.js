@@ -30,7 +30,7 @@ router.get("/:id", async function (req, res, next) {
       data: result[0],
     });
   } else {
-    res.status(204).json({
+    res.status(304).json({
       status: false,
       data: [],
     });
@@ -84,7 +84,7 @@ router.delete("/:id", async function (req, res, next) {
       data: result[0],
     });
   } else {
-    res.status(204).json({
+    res.status(304).json({
       status: false,
       data: [],
     });
