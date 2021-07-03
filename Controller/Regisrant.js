@@ -165,7 +165,7 @@ router.put("/:id", validate(), handlerInput, function (req, res, next) {
   let id = req.params.id;
   let sql = `UPDATE  registrant SET username=$1, idappointments=$2, date_regist=$3, date_book=$4, time_book=$5, flagstatus=$6 where id = $7`;
   let data = [
-    req.username,
+    req.body.username,
     req.body.idappointments,
     req.body.date_regist,
     req.body.date_book,
